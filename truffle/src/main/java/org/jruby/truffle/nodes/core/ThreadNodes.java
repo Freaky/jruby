@@ -10,6 +10,7 @@
 package org.jruby.truffle.nodes.core;
 
 import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
@@ -377,6 +378,7 @@ public abstract class ThreadNodes {
             super(context, sourceSection);
         }
 
+        @TruffleBoundary
         @Specialization(guards = "isRubyProc(block)")
         public RubyBasicObject initialize(RubyBasicObject thread, Object[] arguments, RubyBasicObject block) {
             ThreadNodes.initialize(thread, getContext(), this, arguments, block);
@@ -442,16 +444,13 @@ public abstract class ThreadNodes {
     @CoreMethod(names = "pass", onSingleton = true)
     public abstract static class PassNode extends CoreMethodArrayArgumentsNode {
 
-        @Child ThreadPassNode threadPassNode;
-
         public PassNode(RubyContext context, SourceSection sourceSection) {
             super(context, sourceSection);
-            threadPassNode = new ThreadPassNode(context, sourceSection);
         }
 
         @Specialization
         public RubyBasicObject pass(VirtualFrame frame) {
-            threadPassNode.executeVoid(frame);
+            Thread.yield();
             return nil();
         }
 

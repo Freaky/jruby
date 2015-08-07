@@ -72,7 +72,7 @@ public interface NativeSockets {
      *        socklen_t *restrict address_len);
      */
 
-    int accept(int socket, Pointer address, IntByReference addressLength);
+    int accept(int socket, Pointer address, int[] addressLength);
 
     /*
      * int
@@ -104,6 +104,13 @@ public interface NativeSockets {
      */
 
     int getsockname(int socket, Pointer address, Pointer address_len);
+
+    /*
+     * int getsockopt(int sockfd, int level, int optname,
+     *                void *optval, socklen_t *optlen);
+     */
+    int getsockopt(int sockfd, int level, int optname, Pointer optval, Pointer optlen);
+
 
     /**
      * int connect(int sockfd, const struct sockaddr *addr,
